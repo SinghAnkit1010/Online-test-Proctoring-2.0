@@ -3,7 +3,7 @@ import colors from "colors";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
-// import router from "./routes/userRoutes.js";
+import userRouter from "./routes/userRoutes.js";
 
 //dotenv config
 dotenv.config();
@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 //routes
-// app.use("/api/v1/user", router);
+app.use("/api/v1/user", userRouter);
 
 
 
@@ -36,6 +36,8 @@ const port=process.env.PORT || 4000
 //     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 //   });
 // }
+
+
 
 app.listen(port, ()=>{
     console.log(`Server Running in ${process.env.NODE_MODE} Mode on port ${port}`.bgCyan.white);
