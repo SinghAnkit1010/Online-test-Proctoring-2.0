@@ -1,9 +1,12 @@
 import mongoose from "mongoose";
 
-const studentSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "name is required"]
+    },
+    registrationNumber: {
+        type: String,
     },
     email: {
         type: String,
@@ -17,9 +20,8 @@ const studentSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    reg
 });
 
-const studentModel = mongoose.model('student', studentSchema);
+const userModel = mongoose.model('user', userSchema);
 
-export default studentModel;
+export default userModel;

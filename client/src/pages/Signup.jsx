@@ -1,20 +1,27 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import loginImg from '../images/Login.jpg';
-import { hideLoading, showLoading } from '../redux/features/alertSlice';
-import { message } from 'antd';
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import loginImg from "../images/Login.jpg";
+import { hideLoading, showLoading } from "../redux/features/alertSlice";
+import { message } from "antd";
 
 function Signup() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [isInstitution, setIsInstitution] = useState(false);
+
+  const handleCheckboxChange = (e) => {
+    setIsInstitution(e.target.checked);
+  };
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    registrationNumber: "",
   });
 
   const handleInputChange = (e) => {
@@ -29,24 +36,29 @@ function Signup() {
     e.preventDefault();
     try {
       dispatch(showLoading());
-      const { password, confirmPassword} = formData;
+      const { password, confirmPassword } = formData;
       if (password !== confirmPassword) {
-        message.error('Password does not match');
+        message.error("Password does not match");
         dispatch(hideLoading());
         return;
       }
-      const res = await axios.post('/api/v1/student/register', formData);
+
+      formData.isInstitution = isInstitution;
+    
+
+      const res = await axios.post("/api/v1/user/register", formData);
+
       dispatch(hideLoading());
       if (res.data.success) {
-        message.success('Registered Successfully');
-        navigate('/login');
+        message.success("Registered Successfully");
+        navigate("/login");
       } else {
         message.error(res.data.message);
       }
     } catch (error) {
       dispatch(hideLoading());
       console.log(error);
-      message.error('Something went wrong');
+      message.error("Something went wrong");
     }
   };
 
@@ -113,6 +125,34 @@ function Signup() {
               required
             />
           </div>
+          {isInstitution && (
+            <div className="flex flex-col text-gray-400 py-2">
+              <label htmlFor="registrationNumber">Registration Number</label>
+              <input
+                id="registrationNumber"
+                className="rounded-lg bg-gray-700 mt-2 p-2 focus:border-blue-500 focus:bg-gray-800 focus:outline-none"
+                type="text"
+                name="registrationNumber"
+                autoComplete="off"
+                value={formData.registrationNumber}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+          )}
+          <div className="flex flex-col text-gray-400 py-2">
+            <label htmlFor="isInstitution" className="flex items-center">
+              <input
+                id="isInstitution"
+                className="mr-2"
+                type="checkbox"
+                name="isInstitution"
+                checked={isInstitution}
+                onChange={handleCheckboxChange}
+              />
+              Are you an institution?
+            </label>
+          </div>
           <button
             type="submit"
             className="w-full my-3 py-2 bg-teal-500 shadow-lg shadow-teal-500/50 hover:shadow-teal-500/40 text-white font-semibold rounded-lg"
@@ -121,7 +161,7 @@ function Signup() {
           </button>
           <div className="flex justify-center text-gray-400 py-2">
             <p>
-              Already have an account? Go to{' '}
+              Already have an account? Go to{" "}
               <Link className="text-red-400" to="/login">
                 Login
               </Link>

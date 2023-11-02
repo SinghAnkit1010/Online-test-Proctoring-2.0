@@ -1,30 +1,29 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import institutionModel from '../models/institutionModel';
+import userModel from '../models/userModel.js';
 
 const registerController = async (req, res) => {
     try {
-        const existingInstitution = await institutionModel.findOne({ email: req.body.email })
-        if (existingInstitution) {
-            return res.status(200).send({ message: 'Institution already exists', success: false })
+        const existinguser = await userModel.findOne({ email: req.body.email })
+        if (existinguser) {
+            return res.status(200).send({ message: 'User already exists', success: false })
         }
         const password = req.body.password;
-       
 
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt);
         req.body.password = hashedPassword;
 
-        const newInstitution = new institutionModel(
+        const newuser = new userModel(
             {
                 name: req.body.name,
                 email: req.body.email,
-                registrationNumber: req.body.registrationNumber,
                 password: req.body.password,
-                isInstitution: true
+                isInstitution: req.body.isInstitution,
+                registrationNumber: req.body.registrationNumber
             }
         )
-        await newInstitution.save()
+        await newuser.save()
         res.status(201).send({ message: 'Registered Successfully', success: true });
 
 
@@ -37,15 +36,15 @@ const registerController = async (req, res) => {
 
 const loginController = async (req, res) => {
     try {
-        const Institution = await institutionModel.findOne({ email: req.body.email })
-        if (!Institution) {
-            return res.status(200).send({ message: 'Institution not found', success: false })
+        const user = await userModel.findOne({ email: req.body.email })
+        if (!user) {
+            return res.status(200).send({ message: "User is not registered", success: false })
         }
-        const isMatch = await bcrypt.compare(req.body.password, Institution.password)
+        const isMatch = await bcrypt.compare(req.body.password, user.password)
         if (!isMatch) {
             return res.status(200).send({ message: 'Invalid Email or Password', success: false });
         }
-        const token = jwt.sign({ id: Institution._id }, process.env.JWT_SECRET, { expiresIn: '1d' })
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' })
         res.status(200).send({ message: 'Login Successful', success: true, token });
     } catch (error) {
         console.log(error);
@@ -55,16 +54,17 @@ const loginController = async (req, res) => {
 
 const authController = async (req, res) => {
     try {
-        const Institution = await institutionModel.findById({ _id: req.body.InstitutionId })
-        Institution.password = undefined;
-        if (!Institution) {
+        console.log(req.body);
+        const user = await userModel.findById({ _id: req.body.userId })
+        user.password = undefined;
+        if (!user) {
             return res.status(200).send({
-                message: "Institution not found", success: false
+                message: "user not found", success: false
             })
         } else {
             res.status(200).send({
                 success: true,
-                data: Institution
+                data: user
             })
         }
     } catch (error) {
