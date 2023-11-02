@@ -17,6 +17,10 @@ const institutionSchema = new mongoose.Schema({
         type: String,
         required: [true, "password is required"]
     },
+    isInstitution:{
+        type: Boolean,
+        default: false
+    },
 });
 
 const institutionModel = mongoose.model('institution', institutionSchema);

@@ -27,7 +27,7 @@ function Login() {
     e.preventDefault();
     try {
       dispatch(showLoading());
-      const res = await axios.post('/api/v1/student/login', formData);
+      const res = await axios.post('/api/v1/user/login', formData);
       dispatch(hideLoading());
       if (res.data.success) {
         localStorage.setItem('token', res.data.token);
