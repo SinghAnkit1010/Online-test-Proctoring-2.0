@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import studentModel from '../models/studentModel';
+import studentModel from '../models/studentModel.js';
 
 const registerController = async (req, res) => {
     try {
@@ -9,11 +9,6 @@ const registerController = async (req, res) => {
             return res.status(200).send({ message: 'Student already exists', success: false })
         }
         const password = req.body.password;
-        const confirmPassword = req.body.confirmPassword;
-
-        if (password !== confirmPassword) {
-            return res.status(200).send({ message: 'Confirm Password not matches', success: false })
-        }
 
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -41,7 +36,7 @@ const loginController = async (req, res) => {
     try {
         const Student = await studentModel.findOne({ email: req.body.email })
         if (!Student) {
-            return res.status(200).send({ message: 'Student not found', success: false })
+            return res.status(200).send({ message: "Student doesn't registered", success: false })
         }
         const isMatch = await bcrypt.compare(req.body.password, Student.password)
         if (!isMatch) {
@@ -57,7 +52,8 @@ const loginController = async (req, res) => {
 
 const authController = async (req, res) => {
     try {
-        const Student = await studentModel.findById({ _id: req.body.StudentId })
+        console.log(req.body);
+        const Student = await studentModel.findById({ _id: req.body.userId })
         Student.password = undefined;
         if (!Student) {
             return res.status(200).send({
