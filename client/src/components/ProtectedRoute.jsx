@@ -15,7 +15,7 @@ export default function ProtectedRoute({ children }) {
     try {
       dispatch(showLoading())
       const res = await axios.post(
-        '/api/v1/user/getUserData',
+        '/api/v1/student/getStudentData',
         { token: localStorage.getItem('token') },
         {
           headers: {
@@ -25,6 +25,7 @@ export default function ProtectedRoute({ children }) {
       )
       dispatch(hideLoading())
       if (res.data.success) {
+        console.log(res.data)
         dispatch(setUser(res.data.data))
       } else {
         dispatch(Navigate('/login')) // Use dispatch here to navigate

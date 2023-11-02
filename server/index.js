@@ -4,8 +4,8 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import studentRouter from "./routes/studentRoutes.js";
-import institutionRouter from "./routes/institutionRoutes.js";
-import testRouter from "./routes/testRoutes.js";
+// import institutionRouter from "./routes/institutionRoutes.js";
+// import testRouter from "./routes/testRoutes.js";
 
 
 //dotenv config
@@ -23,8 +23,8 @@ app.use(morgan('dev'));
 
 //routes
 app.use("/api/v1/student", studentRouter);
-app.use("/api/v1/institution", institutionRouter);
-app.use("/api/v1/test", testRouter);
+// app.use("/api/v1/institution", institutionRouter);
+// app.use("/api/v1/test", testRouter);
 
 
 

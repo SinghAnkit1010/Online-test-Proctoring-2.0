@@ -1,6 +1,6 @@
 import express from "express";
 import authMiddleware from "../middlewares/authMiddleware.js";
-import {loginController, registerController, authController} from "../controllers/userCtrl.js"
+import { loginController, registerController, authController } from "../controllers/studentCtrl.js"
 
 //router object
 const studentRouter = express.Router()
@@ -14,7 +14,7 @@ studentRouter.post('/login', loginController)
 studentRouter.post('/register', registerController)
 
 //Authorization || POST
-studentRouter.post('/getStudentsData', authMiddleware, authController)
+studentRouter.post('/getStudentData', authMiddleware, authController)
 
 
 
