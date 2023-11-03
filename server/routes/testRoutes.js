@@ -3,7 +3,7 @@ import {createTestController, getTestDetailsController} from "../controllers/tes
 
 const testRouter = express.Router();
 
-testRouter.get('getTestDetails', getTestDetailsController);
+testRouter.get('/getTestDetails', getTestDetailsController);
 
 testRouter.post('/create-test', createTestController);
 
