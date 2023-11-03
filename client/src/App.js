@@ -9,6 +9,7 @@ import ProtectedRoute from './components/ProtectedRoute.jsx';
 import PublicRoute from './components/PublicRoute.jsx';
 import StartTest from './pages/StartTest';
 import CreateTest from './pages/CreateTest';
+import TestPage from './pages/TestPage';
 
 function App() {
   const { loading } = useSelector((state) => state.alerts);
@@ -45,6 +46,7 @@ function App() {
               </PublicRoute>
             }
           />
+
           <Route
             path="/start-test"
             element={
@@ -53,11 +55,21 @@ function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/create-test"
             element={
               <ProtectedRoute>
                 <CreateTest />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/test-page"
+            element={
+              <ProtectedRoute>
+                <TestPage />
               </ProtectedRoute>
             }
           />
