@@ -36,7 +36,7 @@ const Layout = ({ children }) => {
 
   return (
     user && (
-      <div>
+      <>
         <div className="flex justify-between items-center bg-gradient-to-r from-[#901ee2] to-[#594177] p-5 max-h-20">
           <h1 className="text-2xl text-white">
             <img alt="Proctor" style={{ width: '175px' }} />
@@ -99,8 +99,7 @@ const Layout = ({ children }) => {
             </div>
           </div>
         </div>
-        <div className="container">
-          <h1>Children Here</h1>
+        <div>
           {children}
         </div>
         <Footer />
@@ -109,7 +108,7 @@ const Layout = ({ children }) => {
           onConfirm={handleLogoutConfirmation}
           onCancel={handleLogoutCancel}
         />
-      </div>
+      </>
     )
   );
 };

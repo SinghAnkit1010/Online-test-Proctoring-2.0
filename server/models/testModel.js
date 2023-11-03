@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 
 const testSchema = new mongoose.Schema({
-    name: {
+    testName: {
         type: String,
         required: [true, "name is required"]
     },
