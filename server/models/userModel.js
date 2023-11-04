@@ -20,6 +20,14 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    testsCreated:{
+        type: Array,
+        default: []
+    },
+    testsJoined:{
+        type: Array,
+        default: []
+    },
 });
 
 const userModel = mongoose.model('user', userSchema);
