@@ -1,48 +1,60 @@
 import cv2
 import numpy as np
+import onnx
+import onnxruntime
 
-weights_path = "mobile_detector.onnx"
-network = cv2.dnn.readNetFromONNX(weights_path)
+# weights_path = "mobile_detector.onnx"
+# network = cv2.dnn.readNetFromONNX(weights_path)
 class phone_detection:
     def result(self,image):
-        blob = cv2.dnn.blobFromImage(image,1/255.0,(640,640),swapRB=True,crop=True)
-        network.setInput(blob)
-        output = network.forward()[0]
+        # blob = cv2.dnn.blobFromImage(image,1/255.0,(640,640),swapRB=True,crop=True)
+        # network.setInput(blob)
+        # output = network.forward()[0]
+        img = cv2.resize(image,(640,640))
+        img = img.astype('float32') / 255.0
+        path = 'best.onnx'
+        image_transposed = np.transpose(img, (2, 0, 1))
+        model_input = np.expand_dims(image_transposed,axis = 0)
+        session = onnxruntime.InferenceSession(path,None)
+        inputs_name = session.get_inputs()[0].name
+        outputs_name = session.get_outputs()[0].name
+        predictions = session.run([outputs_name],{inputs_name:model_input})[0]
         class_ids = []
         confidences = []
         boxes = []
-        rows = output.shape[0]
-        image_height,image_width,_ = image.shape
-        x_factor = image_width / 640
-        y_factor =  image_height / 640
-        for i in range(rows):
-            row = output[i]
-            confidence = row[4]
-            if confidence >= 0.5:
-                class_scores = row[5:]
+        outputs = predictions[0]
+        anchors = outputs.shape[0]
+        height,width,_ = image.shape
+        x_factor = width / 640
+        y_factor =  height / 640
+        for i in range(anchors):
+            anchor_output = outputs[i]
+            confidence = anchor_output[4]
+            if confidence >= 0.4:
+                class_scores = anchor_output[5:]
                 _,_,_,max_index = cv2.minMaxLoc(class_scores)
                 class_id = max_index[1]
                 if(class_scores[class_id] > 0.3):
                     confidences.append(confidence)
                     class_ids.append(class_id)
-                    x,y,w,h = row[0].item(), row[1].item(), row[2].item(), row[3].item()
-                    left = int((x - 0.5 * w) * x_factor)
-                    top = int((y - 0.5 * h) * y_factor)
-                    width = int(w * x_factor)
-                    height = int(h * y_factor)
-                    box = np.array([left,top,width,height])
-                    boxes.append(box)
-        indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.25, 0.45) 
+                    x,y,w,h = anchor_output[0].item(), anchor_output[1].item(), anchor_output[2].item(), anchor_output[3].item()
+                    x_min = int((x - (w/2))*x_factor)
+                    y_min = int((y - (h/2))*y_factor)
+                    x_max = int(x + w*x_factor)
+                    y_max = int(y + h*y_factor)
+                    boxes.append(np.array([x_min,y_min,x_max,y_max]))
+        indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.3, 0.45) 
         result_class_ids = []
         result_confidences = [] 
         result_boxes = []
         for i in indexes:
             result_confidences.append(confidences[i])
             result_class_ids.append(class_ids[i])
-            result_boxes.append(boxes[i])
-            if result_confidences is None:
-                return 0
-            else:
-                return 1
+            result_boxes.append(boxes[i]) 
+        if result_confidences is None:
+            return None
+        else:
+            x1,y1,x2,y2 = result_boxes[0][0],result_boxes[0][1],result_boxes[0][2],result_boxes[0][3]
+            return [x1,y1,x2,y2]
 
 

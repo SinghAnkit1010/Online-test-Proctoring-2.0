@@ -148,8 +148,9 @@ def video_streaming():
                     #                         connection_drawing_spec=drawing_spec)
             object = phone_detection()
             phone = object.result(image)
-            if phone == 1:
+            if not phone:
                 phone_sus += 1
+                cv2.rectangle(image,(phone[0],phone[1]),(phone[2],phone[3]),(0,0,255),1,1)
                 cv2.putText(image,"phone detected",(5,100),cv2.FONT_HERSHEY_TRIPLEX,1,(255,0,0),1)
             ret,buffer = cv2.imencode(".jpg",image)
             image = buffer.tobytes()
