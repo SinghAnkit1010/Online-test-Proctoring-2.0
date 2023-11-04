@@ -3,9 +3,15 @@ import Layout from "../components/Layout";
 import "../styles/CreateTest.css";
 import { Form, Input, message } from "antd";
 import QuestionForm from "../components/QuestionForm";
+import { useDispatch } from 'react-redux';
+import { showLoading, hideLoading } from '../redux/features/alertSlice';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const CreateTest = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   
   const [questionSet, setQuestionSet] = useState([]);
 
@@ -34,20 +40,13 @@ const CreateTest = () => {
 
 
 
-
   const [correctAnswer, setCorrectAnswer] = useState(null);
   const handleChangeCorrectAnswer = (value) => setCorrectAnswer(value);
 
 
 
-
   const handleQuestionSubmit = (event) => {
     event.preventDefault();
-
-    // Validate inputs before submitting
-    // if (!question || options.length < 2 ) {
-    //   return; // Do not submit incomplete questions
-    // }
 
     const questionData = {
       id: Date.now(),
@@ -55,11 +54,9 @@ const CreateTest = () => {
       options: options,
       correctAnswer: correctAnswer,
     };
-    console.log(questionData)
 
     setQuestionSet([...questionSet, questionData]);
 
-    // Reset form fields after submitting
     setQuestion("");
     setOptions([]);
     setCorrectAnswer(null);
@@ -69,16 +66,25 @@ const CreateTest = () => {
 
   // ************************************************
 
-  const handleTestSubmit = (testData) => {
-    // Handle the overall test submission, including the test data and questions array
-    // Send this data to your backend API to store in the database
+  const handleTestSubmit = async (testData) => {
     try {
-      console.log("Test Data:", {
-        ...testData,
-        questionSet: questionSet,
+      dispatch(showLoading());
+      const res= await axios.post('/api/v1/test/create-test', 
+      {...testData, questionSet},
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
       });
-      message.success("sumbitted successfully");
+      if(res.data.success){
+        message.success('Test Created Successfully');
+        navigate('/');
+      }else{
+        message.error(res.data.message);
+      }
+      dispatch(hideLoading());
     } catch (error) {
+      dispatch(hideLoading());
       console.log(error);
     }
   };
@@ -95,7 +101,7 @@ const CreateTest = () => {
             <Form.Item label="Test Name" name="testName">
               <Input type="text" required />
             </Form.Item>
-            {/* <Form.Item label='Start Date' name='startDate'>
+            <Form.Item label='Start Date' name='startDate'>
             <Input
               type='date' required
             />
@@ -114,7 +120,7 @@ const CreateTest = () => {
             <Input
               type='number' required
             />
-          </Form.Item> */}
+          </Form.Item>
 
             {questionSet.length > 0 && (
               <div className="questions-container">
