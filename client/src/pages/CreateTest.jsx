@@ -116,11 +116,6 @@ const CreateTest = () => {
               type='number' required
             />
           </Form.Item>
-          <Form.Item label='Number of Questions' name='numQuestions'>
-            <Input
-              type='number' required
-            />
-          </Form.Item>
 
             {questionSet.length > 0 && (
               <div className="questions-container">
