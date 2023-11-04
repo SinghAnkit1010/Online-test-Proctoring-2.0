@@ -10,38 +10,11 @@ import '../styles/Home.css';
 
 function StartTest() {
 
+  const [testId, setTestId] = useState(null);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({ email: '' });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = async(e) => {
-    e.preventDefault();
-    try {
-      dispatch(showLoading());
-      const res = await axios.post('/api/v1/test/start-test', formData);
-      dispatch(hideLoading());
-      if (res.data.success) {
-        localStorage.setItem('token', res.data.token);
-        message.success('Login Successful');
-        navigate('/test-page');
-      } else {
-        message.error(res.data.message);
-      }
-    } catch (error) {
-      dispatch(hideLoading());
-      console.log(error);
-      message.error('Something went wrong');
-    }
-  };
 
   return (
     <Layout>
@@ -57,12 +30,12 @@ function StartTest() {
               type="text"
               name="link"
               autoComplete="none"
-              value={formData.link}
-              onChange={handleInputChange}
+              value={testId}
+              onChange={(e) => setTestId(e.target.value)}
               required
             />
             <button
-              onClick={handleSubmit}
+              onClick={() => navigate(`/test-page/${testId}`)}
               className="ml-2 w-20 my-3 py-2 bg-teal-500 shadow-lg shadow-teal-500/50 hover:shadow-teal-500/40 text-white font-semibold rounded-lg"
             >
               Join

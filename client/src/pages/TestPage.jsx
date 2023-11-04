@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import '../styles/Home.css';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import {message} from 'antd';
 
 function TestPage() {
-  const questions = [
-    {
-      question: 'What is the capital of France?',
-      options: ['Paris', 'London', 'Berlin', 'Madrid'],
-    },
-    {
-      question: 'Which planet is known as the Red Planet?',
-      options: ['Mars', 'Venus', 'Jupiter', 'Saturn'],
-    },
-  ];
 
-  const initialAnswers = questions.map(() => null);
+  const [testDetails, setTestDetails] = useState(null);
+  const { testId } = useParams();
+
+
+
+  // const initialAnswers = testDetails?.questionSet?.map(() => null);
+  const initialAnswers = (testDetails?.questionSet ?? []).map(() => null);
+
   const [answers, setAnswers] = useState(initialAnswers);
 
   const handleOptionSelect = (questionIndex, optionIndex) => {
     const newAnswers = [...answers];
     newAnswers[questionIndex] = {
       index: optionIndex + 1,
-      answer: questions[questionIndex].options[optionIndex],
+      answer: testDetails?.questionSet[questionIndex]?.options[optionIndex],
     };
     setAnswers(newAnswers);
   };
@@ -32,10 +32,38 @@ function TestPage() {
     setAnswers(newAnswers);
   };
 
+  const getTestDetails = async () => {
+    try {
+      const res = await axios.get(`/api/v1/test/getTestDetails/${testId}`, 
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+      );
+      if (res.data.success) {
+        const test = res.data.test;
+        setTestDetails(test);
+        message.success("Test details fetched successfully");
+        // console.log(test);
+      }
+      else{
+        message.error("Error in fetching test details");
+      }
+    } catch (error) {
+      message.error("Error in fetching test details");
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getTestDetails();
+  }
+  , []);
+
+
+
   const handleSubmit = () => {
-    // Here, you can send 'answers' to the backend for storage.
-    // You would typically use a library like axios or fetch to make an API call to your server.
-    // The backend will handle storing the answers in a database.
     console.log('Answers:', answers);
   };
 
@@ -45,7 +73,7 @@ function TestPage() {
         <div>
           <h1>Questionnaire</h1>
           <form>
-            {questions.map((question, index) => (
+            {testDetails?.questionSet?.map((question, index) => (
               <div key={index} className="clear-both">
                 <p>
                   <strong>Question {index + 1}:</strong> {question.question}
@@ -59,7 +87,7 @@ function TestPage() {
                       value={optionIndex}
                       checked={
                         answers[index] !== null &&
-                        answers[index].index === optionIndex + 1
+                        answers[index]?.index === optionIndex + 1
                       }
                       onChange={() => handleOptionSelect(index, optionIndex)}
                       className="w-5 h-5"
