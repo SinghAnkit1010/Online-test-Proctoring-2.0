@@ -10,6 +10,7 @@ import PublicRoute from './components/PublicRoute.jsx';
 import StartTest from './pages/StartTest';
 import CreateTest from './pages/CreateTest';
 import TestPage from './pages/TestPage';
+import Profile from './pages/Profile';
 
 function App() {
   const { loading } = useSelector((state) => state.alerts);
@@ -70,6 +71,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <TestPage />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             }
           />
