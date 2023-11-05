@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
-import '../styles/Home.css';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import {message} from 'antd';
+import { showLoading, hideLoading } from '../redux/features/alertSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import '../styles/TestPage.css';
 
 function TestPage() {
+
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
+  const userId=user?._id;
 
   const [testDetails, setTestDetails] = useState(null);
   const { testId } = useParams();
@@ -45,7 +51,6 @@ function TestPage() {
         const test = res.data.test;
         setTestDetails(test);
         message.success("Test details fetched successfully");
-        // console.log(test);
       }
       else{
         message.error("Error in fetching test details");
@@ -63,15 +68,26 @@ function TestPage() {
 
 
 
-  const handleSubmit = () => {
-    console.log('Answers:', answers);
+  const handleSubmit = async () => {
+    try {
+      const res = await axios.post(`http://localhost:5000/submit-test`);
+      if (res.data.success) {
+        message.success("Test submitted successfully");
+      } else {
+        message.error("Error in submitting test");
+      }
+    } catch (error) {
+      message.error("Error in submitting test");
+      console.log(error);      
+    }
   };
 
   return (
     <Layout>
+          <h1 className='text-3xl text-center my-3'>{testDetails?.testName}</h1>
       <div className="content flex justify-between items-start">
-        <div>
-          <h1>Questionnaire</h1>
+
+        <div >
           <form>
             {testDetails?.questionSet?.map((question, index) => (
               <div key={index} className="clear-both">
@@ -118,6 +134,10 @@ function TestPage() {
               Submit
             </button>
           </form>
+        </div>
+        <div className='stream-area z-99 w-64 h-64 bg-black relative right-3 rounded'>
+          <h1>Live Stream</h1>
+          <img src={`http://localhost:5000/stream`} alt="Live Streaming" />
         </div>
       </div>
     </Layout>
