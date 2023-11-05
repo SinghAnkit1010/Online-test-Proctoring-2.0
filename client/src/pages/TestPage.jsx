@@ -135,8 +135,7 @@ function TestPage() {
             </button>
           </form>
         </div>
-        <div className='stream-area z-99 w-64 h-64 bg-black relative right-3 rounded'>
-          <h1>Live Stream</h1>
+        <div className='stream-area z-99 relative right-3 rounded'>
           <img src={`http://localhost:5000/stream`} alt="Live Streaming" />
         </div>
       </div>
