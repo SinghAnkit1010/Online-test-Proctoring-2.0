@@ -54,7 +54,6 @@ const loginController = async (req, res) => {
 
 const authController = async (req, res) => {
     try {
-        console.log(req.body);
         const user = await userModel.findById({ _id: req.body.userId })
         user.password = undefined;
         if (!user) {
