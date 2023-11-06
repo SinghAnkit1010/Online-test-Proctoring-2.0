@@ -70,9 +70,10 @@ function TestPage() {
 
   const handleSubmit = async () => {
     try {
-      const res = await axios.post(`http://localhost:5000/submit-test`);
+      const res = await axios.get(`http://localhost:5000/submit-test`);
       if (res.data.success) {
         message.success("Test submitted successfully");
+        console.log(res.data);
       } else {
         message.error("Error in submitting test");
       }
