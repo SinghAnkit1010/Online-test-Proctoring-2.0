@@ -2,7 +2,6 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import math
-import torch
 from phone_detector import phone_detection
 from fastapi import FastAPI
 from flask import Flask,render_template,request,redirect,url_for,session,Response,jsonify
@@ -24,8 +23,8 @@ face_mesh = mp_face_mesh.FaceMesh(min_detection_confidence=0.5, min_tracking_con
 mp_drawing = mp.solutions.drawing_utils
 drawing_spec = mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
 
+global streaming
 streaming = True
-
 
 def cal_distance(p1,p2):
     return math.sqrt(((p1[0] - p2[0]) ** 2) + ((p1[1] - p2[1]) ** 2)) 
@@ -44,18 +43,21 @@ def video_streaming():
     global capture
     capture = cv2.VideoCapture(0)
     while streaming:
-        print("not detected:" + str(not_detected))
-        print("many_person:" + str(many_person))
-        print("phone detected:" + str(phone_sus))
-        print("head moved:" + str(head_move))
-        print("talked:" + str(talk))
+        # print("not detected:" + str(not_detected))
+        # print("many_person:" + str(many_person))
+        # print("phone detected:" + str(phone_sus))
+        # print("head moved:" + str(head_move))
+        # print("talked:" + str(talk))
         isTrue,image = capture.read()
         if not isTrue:
             continue
-        try:
-            image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
-            keypoints = face_mesh.process(image)
-            faces = face_detection.process(image)
+        image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+        keypoints = face_mesh.process(image)
+        faces = face_detection.process(image)
+        if not faces.detections:
+            not_detected +=1
+            cv2.putText(image,"No Person Detected",(5,40),cv2.FONT_HERSHEY_COMPLEX,1,(255,0,0),1)
+        else:
             if not(keypoints.multi_face_landmarks):
                 not_detected +=1
                 cv2.putText(image,"No Person Detected",(5,40),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),1)
@@ -99,8 +101,8 @@ def video_streaming():
                     face_3d = np.array(face_3d, dtype=np.float64)
                     focal_length = 1 * img_w
                     camera_matrix = np.array([[focal_length,0,img_h/2],
-                                            [0,focal_length,img_w/2],
-                                            [0,0,1]])
+                                        [0,focal_length,img_w/2],
+                                        [0,0,1]])
                     distortion_matrix = np.zeros((4,1),dtype=np.float64)
                     success,rotation_vector,translation_vector = cv2.solvePnP(face_3d, face_2d, camera_matrix, distortion_matrix)
                     rotational_matrix,jac = cv2.Rodrigues(rotation_vector)
@@ -108,35 +110,35 @@ def video_streaming():
                     x = angles[0] * 360
                     y = angles[1] * 360
                     z = angles[2] * 360
-                
+            
 
-                    if y < -17:
+                    if y < -15:
                         text = "Looking Left"
                         head_move += 1
-                    elif y > 17:
+                    elif y > 15:
                         text = "Looking Right"
                         head_move += 1
-                    elif x < -14:
+                    elif x < -13:
                         text = "Looking Down"
                         head_move += 1
-                    elif x > 14:
+                    elif x > 13:
                         text = "Looking Up"
                         head_move += 1
                     else:
                         text = "looking Forward"
-                
+            
                     lip_distance = (cal_distance(upperlip_1,lowerlip_1)
-                                    + cal_distance(upperlip_2,lowerlip_2)
-                                    + cal_distance(upperlip_3,lowerlip_3)
-                                    + cal_distance(upperlip_4,lowerlip_4)
-                                    + cal_distance(upperlip_5,lowerlip_5)) // 5
-                    
-                    if(lip_distance >= 8):
+                                + cal_distance(upperlip_2,lowerlip_2)
+                                + cal_distance(upperlip_3,lowerlip_3)
+                                + cal_distance(upperlip_4,lowerlip_4)
+                                + cal_distance(upperlip_5,lowerlip_5)) // 5
+                
+                    if(lip_distance >= 7):
                         lip_text = "Talking" 
                         talk += 1
                     else:
                         lip_text = "not talking"
-                
+            
                     cv2.putText(image,lip_text,(5,70),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),1)
                     cv2.putText(image, text, (5, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 1)
                     # cv2.putText(image, "x: " + str(np.round(x,2)), (500, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
@@ -146,24 +148,19 @@ def video_streaming():
                     #                         landmark_list=keypoints.multi_face_landmarks[0],
                     #                         landmark_drawing_spec=drawing_spec,
                     #                         connection_drawing_spec=drawing_spec)
-            object = phone_detection()
-            phone = object.result(image)
-            if not phone:
-                phone_sus += 1
-                cv2.rectangle(image,(phone[0],phone[1]),(phone[2],phone[3]),(0,0,255),1,1)
-                cv2.putText(image,"phone detected",(5,100),cv2.FONT_HERSHEY_TRIPLEX,1,(255,0,0),1)
-            ret,buffer = cv2.imencode(".jpg",image)
-            image = buffer.tobytes()
-            yield (b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n')
-        except:
-            continue     
+        object = phone_detection()
+        phone = object.result(image)
+        if phone:
+            phone_sus += 1
+            cv2.rectangle(image,(phone[0],phone[1]),(phone[2],phone[3]),(0,0,255),1,1)
+            cv2.putText(image,"phone detected",(5,100),cv2.FONT_HERSHEY_TRIPLEX,1,(255,0,0),1)
+        ret,buffer = cv2.imencode(".jpg",image)
+        image = buffer.tobytes()
+        yield (b'--frame\r\n'
+            b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n')    
     capture.release()
     cv2.destroyAllWindows()
 
-def stopcamera(): 
-    capture.release()
-    cv2.destroyAllWindows()
 
 
 class Hello(Resource):
@@ -171,15 +168,23 @@ class Hello(Resource):
       return jsonify({'message': 'hello world'})
     
 
-class Start_Test(Resource):
+class Stream(Resource):
     @cross_origin()
     def get(self):
         return Response(video_streaming(), mimetype='multipart/x-mixed-replace; boundary=frame')
     
+
+class Start_Test(Resource):
+    @cross_origin()
+    def get(self):
+        return redirect('/stream')
+
 class Stop_Test(Resource):
     @cross_origin()
-    def post(self):
-        stopcamera()
+    def get(self):
+        capture.release()
+        cv2.destroyAllWindows()
+        streaming = False
         return jsonify({"number of times no person detected" : not_detected,
                         "number of times many person detected" : many_person,
                         "numbers of time phone detected" : phone_sus,
@@ -188,6 +193,7 @@ class Stop_Test(Resource):
 
 
 api.add_resource(Hello,'/')
+api.add_resource(Stream,'/stream')
 api.add_resource(Start_Test,'/start_test')
 api.add_resource(Stop_Test,'/stop_test')
 
