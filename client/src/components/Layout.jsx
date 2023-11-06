@@ -39,7 +39,7 @@ const Layout = ({ children }) => {
       <>
         <div className="flex justify-between items-center bg-gradient-to-r from-[#901ee2] to-[#594177] p-5 max-h-20">
           <h1 className="text-2xl text-white">
-            <img alt="Proctor" style={{ width: '175px' }} />
+            <img alt="iProctor" style={{ width: '175px' }} />
           </h1>
           <div className="flex items-center justify-end ">
             <ul className="flex gap-6 list-none mr-8">
@@ -56,7 +56,7 @@ const Layout = ({ children }) => {
                   href="/#shop"
                   className="text-white text-xl hover:text-gray-600 no-underline hover:bg-gray-200 p-1 hover:rounded"
                 >
-                  Shop
+                  FAQ
                 </a>
               </li>
               <li>

@@ -3,7 +3,7 @@ import mediapipe as mp
 import numpy as np
 import math
 from phone_detector import phone_detection
-from fastapi import FastAPI
+# from fastapi import FastAPI
 from flask import Flask,render_template,request,redirect,url_for,session,Response,jsonify
 from flask_restful import Api, Resource, reqparse
 from flask_cors import CORS, cross_origin
@@ -172,6 +172,12 @@ class Stream(Resource):
     @cross_origin()
     def get(self):
         return Response(video_streaming(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+class Start_Test(Resource):
+    @cross_origin()
+    def get(self):
+        return redirect('/stream')
     
 
 class Start_Test(Resource):
@@ -196,6 +202,8 @@ api.add_resource(Hello,'/')
 api.add_resource(Stream,'/stream')
 api.add_resource(Start_Test,'/start_test')
 api.add_resource(Stop_Test,'/stop_test')
+
+
 
 
 
