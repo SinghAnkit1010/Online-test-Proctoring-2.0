@@ -200,8 +200,8 @@ class Stop_Test(Resource):
 
 api.add_resource(Hello,'/')
 api.add_resource(Stream,'/stream')
-api.add_resource(Start_Test,'/start_test')
-api.add_resource(Stop_Test,'/stop_test')
+api.add_resource(Start_Test,'/start-test')
+api.add_resource(Stop_Test,'/submit-test')
 
 
 
