@@ -19,4 +19,7 @@ userRouter.post('/getUserData', authMiddleware, authController)
 
 
 
+
+
+
 export default userRouter;

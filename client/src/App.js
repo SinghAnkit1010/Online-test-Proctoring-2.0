@@ -11,6 +11,7 @@ import StartTest from './pages/StartTest';
 import CreateTest from './pages/CreateTest';
 import TestPage from './pages/TestPage';
 import Profile from './pages/Profile';
+import Result from './pages/Result';
 
 function App() {
   const { loading } = useSelector((state) => state.alerts);
@@ -74,7 +75,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          
+
           <Route
             path="/profile"
             element={
@@ -83,6 +84,18 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+
+          <Route
+            path="/result/:testId"
+            element={
+              <ProtectedRoute>
+                <Result />
+              </ProtectedRoute>
+            }
+          />
+
+          
         </Routes>
       )}
     </>

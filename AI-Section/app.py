@@ -191,7 +191,8 @@ class Stop_Test(Resource):
         capture.release()
         cv2.destroyAllWindows()
         streaming = False
-        return jsonify({"number of times no person detected" : not_detected,
+        return jsonify({
+                        "number of times no person detected" : not_detected,
                         "number of times many person detected" : many_person,
                         "numbers of time phone detected" : phone_sus,
                         "number of times head movement occured" : head_move,

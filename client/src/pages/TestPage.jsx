@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import {message} from 'antd';
-import { showLoading, hideLoading } from '../redux/features/alertSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import '../styles/TestPage.css';
 
 function TestPage() {
 
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
   const userId=user?._id;
 
@@ -71,12 +70,27 @@ function TestPage() {
   const handleSubmit = async () => {
     try {
       const res = await axios.get(`http://localhost:5000/submit-test`);
-      if (res.data.success) {
-        message.success("Test submitted successfully");
-        console.log(res.data);
+      let activities;
+      if (res.data) {
+        activities = res.data;
       } else {
-        message.error("Error in submitting test");
+        message.error("Error in submitting test1");
       }
+
+      const res2= await axios.post(`/api/v1/test/submitTest`, {userId, answers, testId, activities},
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if(res2.data.success){
+        message.success('Test submitted successfully');
+        navigate(`/result/${testId}`);
+      }
+      else{
+        message.error('Error in submitting test2');
+      }
+
     } catch (error) {
       message.error("Error in submitting test");
       console.log(error);      
