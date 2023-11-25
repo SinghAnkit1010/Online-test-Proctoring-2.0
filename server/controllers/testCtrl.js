@@ -49,4 +49,69 @@ const getTestDetailsController = async (req, res) => {
     }
 }
 
-export { createTestController , getTestDetailsController};
+const submitTestController = async (req, res) => {
+    try {
+        const userId= req.body.userId;
+        const testId = req.body.testId;
+        const answers = req.body.answers;
+        const activities = req.body.activities;
+        const user = await userModel.findById(userId);
+        const test= await testModel.findById(testId);
+        let score=0;
+        const questionSet = test.questionSet;
+        for(let i=0;i<answers.length;i++){
+            if(answers[i]==null || answers[i]==undefined){
+                continue;
+            }
+            if(answers[i].index-1==questionSet[i].correctAnswer){
+                score++;
+            }
+        }
+        // console.log(score);
+        // console.log(activities);
+        user.testsJoined.push({
+            testId: testId,
+            score: score,
+            totalScore: questionSet.length,
+            activities: activities
+        });
+        await user.save();
+        test.studentsJoined.push({
+            userId: userId,
+            score: score,
+            totalScore: questionSet.length,
+            activities: activities
+        });
+        await test.save();
+        res.status(200).send({ message: 'Test Submitted Successfully', success: true });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: `Error in submitTestController: ${error.message}`, success: false });
+    }
+}
+
+// Import statements...
+
+const getResultsController = async (req, res) => {
+    try {
+      const testId = req.query.testId; // Access the testId from query parameters
+      const userId = req.body.userId; 
+  
+      const user = await userModel.findById(userId);
+      
+      const testResult = user.testsJoined.find(test => test.testId === testId);
+  
+      if (testResult) {
+        res.status(200).send({ message: 'Test Results fetched successfully', success: true, test: testResult });
+      } else {
+        res.status(404).send({ message: 'Test not found', success: false });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ message: `Error in getResultsController: ${error.message}`, success: false });
+    }
+  };
+  
+  
+
+export { createTestController , getTestDetailsController, submitTestController, getResultsController};
