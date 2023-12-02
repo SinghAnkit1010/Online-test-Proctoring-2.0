@@ -37,7 +37,7 @@ const Layout = ({ children }) => {
   return (
     user && (
       <>
-        <div className="flex justify-between items-center bg-gradient-to-r from-[#0069DC] to-[#594177] p-5 max-h-20">
+        <div className="flex justify-between items-center bg-gradient-to-r from-[#0069DC] to-[#594177] p-3 max-h-25">
           <h1 className="text-2xl text-white">
             <a href='/'><img src={logo} alt="Proctopous" style={{ display:"inline-block", width: '3rem' }} />  Proctopous</a>
           </h1>
@@ -51,14 +51,7 @@ const Layout = ({ children }) => {
                   Home
                 </a>
               </li>
-              <li>
-                <a
-                  href="/#shop"
-                  className="text-white text-xl hover:text-gray-600 no-underline hover:bg-gray-200 p-1 hover:rounded"
-                >
-                  FAQ
-                </a>
-              </li>
+          
               <li>
                 <a
                   href="/about"
@@ -69,14 +62,6 @@ const Layout = ({ children }) => {
                   }}
                 >
                   About Us
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#contactUs"
-                  className="text-white text-xl hover:text-gray-600 no-underline hover:bg-gray-200 p-1 hover:rounded"
-                >
-                  Contact Us
                 </a>
               </li>
             </ul>
