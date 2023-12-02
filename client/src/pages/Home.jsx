@@ -26,6 +26,7 @@ const Home = () => {
     <Layout>
       <div className='content flex justify-center items-center'>
         <div>
+          <h1 className="text-4xl text-center font-semibold">Welcome to Testify</h1>
           {user?.isInstitution ? (
             <button className="text-center w-48 my-3 py-2 bg-teal-500 shadow-lg shadow-teal-500/50 hover:shadow-teal-500/40 text-white font-semibold rounded-lg" onClick={routeToCreateTest}>Create test</button>
           ) : (

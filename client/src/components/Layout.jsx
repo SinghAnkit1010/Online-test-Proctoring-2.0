@@ -21,7 +21,7 @@ const Layout = ({ children }) => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     dispatch(hideLoading());
-    navigate('/login');
+    navigate('/');
     window.location.reload();
   };
 

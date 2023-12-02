@@ -12,6 +12,7 @@ import CreateTest from './pages/CreateTest';
 import TestPage from './pages/TestPage';
 import Profile from './pages/Profile';
 import Result from './pages/Result';
+import LandingPage from './pages/LandingPage.jsx';
 
 function App() {
   const { loading } = useSelector((state) => state.alerts);
@@ -21,15 +22,22 @@ function App() {
         <Spinner />
       ) : (
         <Routes>
-          {/* home */}
           <Route
             path="/"
+
             element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
+              localStorage.getItem('token') ? (
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              ) : (
+                <PublicRoute>
+                  <LandingPage />
+                </PublicRoute>
+              )
             }
           />
+
 
           <Route
             path="/login"
@@ -95,7 +103,7 @@ function App() {
             }
           />
 
-          
+
         </Routes>
       )}
     </>

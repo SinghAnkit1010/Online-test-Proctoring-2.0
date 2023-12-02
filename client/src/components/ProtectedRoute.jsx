@@ -27,9 +27,8 @@ export default function ProtectedRoute({ children }) {
       if (res.data.success) {
         dispatch(setUser(res.data.data))
       } else {
-        dispatch(Navigate('/login')) // Use dispatch here to navigate
-        // <Navigate to= '/login' />
         localStorage.clear()
+        return <Navigate to="/"/>
       }
     } catch (error) {
       dispatch(hideLoading())
@@ -47,6 +46,6 @@ export default function ProtectedRoute({ children }) {
   if (localStorage.getItem("token")) {
     return children
   } else {
-    return <Navigate to="/login" /> // Use <Navigate /> as a statement
+    return <Navigate to="/" /> 
   }
 }
