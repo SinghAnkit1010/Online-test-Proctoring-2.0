@@ -2,7 +2,7 @@ import React from 'react'
 
 const Spinner = () => {
   return (
-    <div className="d-flex justify-content-center spinner">
+    <div className="d-flex justify-content-center items-center spinner">
         <div className="spinner-border" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>

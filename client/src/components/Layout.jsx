@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Avatar, Badge, message } from 'antd';
 import Footer from './Footer';
 import { useState } from 'react';
 import ConfirmationModal from './ConfirmationPage';
 import { hideLoading } from '../redux/features/alertSlice';
+import logo from "../images/icons8.png"
 
 const Layout = ({ children }) => {
   const navigate = useNavigate();
@@ -37,9 +37,9 @@ const Layout = ({ children }) => {
   return (
     user && (
       <>
-        <div className="flex justify-between items-center bg-gradient-to-r from-[#901ee2] to-[#594177] p-5 max-h-20">
+        <div className="flex justify-between items-center bg-gradient-to-r from-[#0069DC] to-[#594177] p-5 max-h-20">
           <h1 className="text-2xl text-white">
-            <img alt="iProctor" style={{ width: '175px' }} />
+            <a href='/'><img src={logo} alt="Proctopous" style={{ display:"inline-block", width: '3rem' }} />  Proctopous</a>
           </h1>
           <div className="flex items-center justify-end ">
             <ul className="flex gap-6 list-none mr-8">
