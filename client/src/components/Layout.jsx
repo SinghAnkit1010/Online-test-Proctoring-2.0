@@ -37,7 +37,7 @@ const Layout = ({ children }) => {
   return (
     user && (
       <>
-        <div className="flex justify-between items-center bg-gradient-to-r from-[#0069DC] to-[#594177] p-3 max-h-25">
+        <div className="flex justify-between items-center bg-gradient-to-r from-[#0069DC] to-[#594177] p-3 max-h-25 ">
           <h1 className="text-2xl text-white">
             <a href='/'><img src={logo} alt="Proctopous" style={{ display:"inline-block", width: '3rem' }} />  Proctopous</a>
           </h1>
@@ -64,6 +64,16 @@ const Layout = ({ children }) => {
                   About Us
                 </a>
               </li>
+
+
+              <li>
+                <a
+                  href={user.isInstitution ? '/institution-dashboard' : '/student-dashboard'}
+                  className="text-white text-xl hover:text-gray-600 no-underline hover:bg-gray-200 p-1 hover:rounded"
+                >
+                  Dashboard
+                </a>
+              </li>
             </ul>
 
             <div className="bg-white px-2 py-3 rounded flex gap-1 items-center">
@@ -84,7 +94,7 @@ const Layout = ({ children }) => {
             </div>
           </div>
         </div>
-        <div >
+        <div className='min-h-[80vh]'>
           {children}
         </div>
         <Footer />
