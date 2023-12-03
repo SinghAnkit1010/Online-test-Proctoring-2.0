@@ -106,7 +106,6 @@ const getTestsController = async (req, res) =>{
             }
             tests[i].testDetails= testDetails;
         }
-        console.log(tests);
         res.status(200).send({
             success: true,
             message: 'Tests fetched successfully',
@@ -123,4 +122,44 @@ const getTestsController = async (req, res) =>{
 }
 
 
-export {loginController, registerController, authController, getTestsController}
+const getCreatedTestsController= async(req, res)=>{
+    try {
+        const user= await userModel.findById({_id: req.body.userId})
+        const tests= user.testsCreated;
+
+        let createdTests= [];
+
+        for(let i=0;i<tests.length;i++){
+            const test = await testModel.findById({_id: tests[i]})
+
+            const date= test.startDate;
+            const utcDate = new Date(date);
+            const options = { timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric" };
+            const localDateString = utcDate.toLocaleDateString("en-US", options);
+
+            const testDetails= {
+                testName: test.testName,
+                testDate: localDateString,
+                studentsCount: test.studentsJoined.length,
+                duration: test.duration,
+                testId: test._id
+            }
+            createdTests.push(testDetails);
+        }
+        res.status(200).send({
+            success: true,
+            message: 'Created Tests fetched successfully',
+            createdTests
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            message: 'Created Test fetch error',
+            success: false,
+            error
+        })
+    }
+}
+
+
+export {loginController, registerController, authController, getTestsController, getCreatedTestsController}

@@ -4,7 +4,6 @@ import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
@@ -55,7 +54,7 @@ const StudentDashboard = () => {
       <div>
         <TableContainer>
           <Table variant="striped" colorScheme="teal">
-            <TableCaption>Imperial to metric conversion factors</TableCaption>
+            <TableCaption>List of exams attended by you!</TableCaption>
             <Thead>
               <Tr>
                 <Th>Institute</Th>
