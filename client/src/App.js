@@ -12,6 +12,9 @@ import CreateTest from './pages/CreateTest';
 import TestPage from './pages/TestPage';
 import Profile from './pages/Profile';
 import Result from './pages/Result';
+import LandingPage from './pages/LandingPage.jsx';
+import StudentDashboard from './pages/StudentDashboard.jsx';
+import InstitutionDashboard from './pages/InstitutionDashboard.jsx';
 
 function App() {
   const { loading } = useSelector((state) => state.alerts);
@@ -21,15 +24,22 @@ function App() {
         <Spinner />
       ) : (
         <Routes>
-          {/* home */}
           <Route
             path="/"
+
             element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
+              localStorage.getItem('token') ? (
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              ) : (
+                <PublicRoute>
+                  <LandingPage />
+                </PublicRoute>
+              )
             }
           />
+
 
           <Route
             path="/login"
@@ -95,7 +105,25 @@ function App() {
             }
           />
 
-          
+          <Route
+            path="/student-dashboard"
+            element={
+              <ProtectedRoute>
+                <StudentDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/institution-dashboard"
+            element={
+              <ProtectedRoute>
+                <InstitutionDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+
         </Routes>
       )}
     </>

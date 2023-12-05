@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import userModel from '../models/userModel.js';
+import testModel from '../models/testModel.js';
 
 const registerController = async (req, res) => {
     try {
@@ -77,4 +78,88 @@ const authController = async (req, res) => {
 }
 
 
-export {loginController, registerController, authController}
+const getTestsController = async (req, res) =>{
+    try {
+        const user = await userModel.findById({_id: req.body.userId})
+        const tests= user.testsJoined;
+        for(let i=0;i<tests.length;i++){
+            const test = await testModel.findById({_id: tests[i].testId})
+            const Institution= await userModel.findById({_id: test.institutionID})
+
+            const date= test.startDate;
+            const utcDate = new Date(date);
+            const options = { timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric" };
+            const localDateString = utcDate.toLocaleDateString("en-US", options);
+
+            let ActivityScore= 0;
+            ActivityScore+= tests[i]?.activities[`number of times head movement occured`];
+            ActivityScore+= tests[i]?.activities[`number of times many person detected`];
+            ActivityScore+= tests[i]?.activities[`number of times no person detected`];
+            ActivityScore+= tests[i]?.activities[`number of times talked`];
+            ActivityScore+= tests[i]?.activities[`numbers of time phone detected`];
+            
+            const testDetails= {
+                testName: test.testName,
+                testDate: localDateString,
+                InstitutionName: Institution.name,
+                ActivityScore: ActivityScore
+            }
+            tests[i].testDetails= testDetails;
+        }
+        res.status(200).send({
+            success: true,
+            message: 'Tests fetched successfully',
+            tests
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            message: 'Test fetch error',
+            success: false,
+            error
+        })
+    }
+}
+
+
+const getCreatedTestsController= async(req, res)=>{
+    try {
+        const user= await userModel.findById({_id: req.body.userId})
+        const tests= user.testsCreated;
+
+        let createdTests= [];
+
+        for(let i=0;i<tests.length;i++){
+            const test = await testModel.findById({_id: tests[i]})
+
+            const date= test.startDate;
+            const utcDate = new Date(date);
+            const options = { timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric" };
+            const localDateString = utcDate.toLocaleDateString("en-US", options);
+
+            const testDetails= {
+                testName: test.testName,
+                testDate: localDateString,
+                studentsCount: test.studentsJoined.length,
+                duration: test.duration,
+                testId: test._id
+            }
+            createdTests.push(testDetails);
+        }
+        res.status(200).send({
+            success: true,
+            message: 'Created Tests fetched successfully',
+            createdTests
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            message: 'Created Test fetch error',
+            success: false,
+            error
+        })
+    }
+}
+
+
+export {loginController, registerController, authController, getTestsController, getCreatedTestsController}

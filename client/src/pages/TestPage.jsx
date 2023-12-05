@@ -100,14 +100,12 @@ function TestPage() {
   return (
     <Layout>
           <h1 className='text-3xl text-center my-3'>{testDetails?.testName}</h1>
-      <div className="content flex justify-between items-start">
-
-        <div >
-          <form>
+          <form className='flex flex-col justify-center items-center'>
+            <div className='self-start'>
             {testDetails?.questionSet?.map((question, index) => (
               <div key={index} className="clear-both">
                 <p>
-                  <strong>Question {index + 1}:</strong> {question.question}
+                  <strong>Q.{index + 1}.</strong> {question.question}
                 </p>
                 {question.options.map((option, optionIndex) => (
                   <div key={optionIndex} className="flex items-center">
@@ -125,7 +123,8 @@ function TestPage() {
                     />
 
                     <label
-                      className='text-start w-screen p-2 rounded-lg bg-slate-500 my-2 mx-2 flex-shrink-0 max-w-2xl'
+                      style={{ cursor: 'pointer' }}
+                      className='text-start w-screen p-2 rounded-lg bg-white my-2 mx-2 flex-shrink-0 max-w-2xl'
                       htmlFor={`q${index}-option${optionIndex}`}
                     >
                       {option}
@@ -141,18 +140,18 @@ function TestPage() {
                 </button>
               </div>
             ))}
+              </div>
+
             <button
-              className="text-center w-48 my-3 py-2 bg-teal-400 shadow-lg shadow-teal-500/50 hover:shadow-teal-500/40 text-white font-semibold rounded-lg"
+              className="text-center self-end w-48 my-5 py-2 bg-blue-800 shadow-lg shadow-teal-500/50 hover:shadow-teal-500/40 text-white font-semibold rounded-lg"
               type="button"
               onClick={handleSubmit}
             >
               Submit
             </button>
           </form>
-        </div>
-        <div className='stream-area z-99 relative right-3 rounded'>
+      <div className='stream-area z-99 right-3 rounded'>
           <img src={`http://localhost:5000/stream`} alt="Live Streaming" />
-        </div>
       </div>
     </Layout>
   );
