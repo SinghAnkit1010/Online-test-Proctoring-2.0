@@ -15,6 +15,7 @@ import Result from './pages/Result';
 import LandingPage from './pages/LandingPage.jsx';
 import StudentDashboard from './pages/StudentDashboard.jsx';
 import InstitutionDashboard from './pages/InstitutionDashboard.jsx';
+import TestDetails from './pages/TestDetails.jsx';
 
 function App() {
   const { loading } = useSelector((state) => state.alerts);
@@ -119,6 +120,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <InstitutionDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/test-details/:testId"
+            element={
+              <ProtectedRoute>
+                <TestDetails />
               </ProtectedRoute>
             }
           />

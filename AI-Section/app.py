@@ -211,5 +211,5 @@ api.add_resource(Stop_Test,'/submit-test')
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=6000, debug=False)
 
