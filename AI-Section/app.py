@@ -174,10 +174,10 @@ class Stream(Resource):
         return Response(video_streaming(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-class Start_Test(Resource):
-    @cross_origin()
-    def get(self):
-        return redirect('/stream')
+# class Start_Test(Resource):
+#     @cross_origin()
+#     def get(self):
+#         return redirect('/stream')
     
 
 class Start_Test(Resource):
@@ -211,5 +211,5 @@ api.add_resource(Stop_Test,'/submit-test')
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=6000, debug=False)
+    app.run(host='0.0.0.0', port=9000, debug=False)
 

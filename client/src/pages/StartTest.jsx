@@ -19,7 +19,7 @@ function StartTest() {
   const handleJoinTest = async () => {
     try {
       const timeout = 3000;
-      const response = axios.get("http://localhost:6000/start-test");
+      const response = axios.get("http://localhost:9000/start-test");
       navigate(`/test-page/${testId}`);
 
       const res = await Promise.race([
