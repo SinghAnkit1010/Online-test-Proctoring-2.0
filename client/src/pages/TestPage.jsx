@@ -100,7 +100,7 @@ function TestPage() {
   return (
     <Layout>
           <h1 className='text-3xl text-center my-3'>{testDetails?.testName}</h1>
-          <form className='flex flex-col justify-center items-center'>
+          <form className='flex flex-col justify-center items-center min-h-screen'>
             <div className='self-start'>
             {testDetails?.questionSet?.map((question, index) => (
               <div key={index} className="clear-both">

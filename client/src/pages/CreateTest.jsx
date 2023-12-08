@@ -66,6 +66,8 @@ const CreateTest = () => {
 
   // ************************************************
 
+  const [testId, setTestId] = useState("");
+
   const handleTestSubmit = async (testData) => {
     try {
       dispatch(showLoading());
@@ -78,7 +80,8 @@ const CreateTest = () => {
       });
       if(res.data.success){
         message.success('Test Created Successfully');
-        navigate('/');
+        setTestId(res.data.testId);
+        navigate(`/test-details/${res.data.testId}`);
       }else{
         message.error(res.data.message);
       }

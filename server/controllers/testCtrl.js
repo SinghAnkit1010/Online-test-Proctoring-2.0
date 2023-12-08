@@ -24,7 +24,7 @@ const createTestController = async (req, res) => {
         user.testsCreated.push(newTest._id);
         await user.save(); 
 
-        res.status(201).send({ message: 'Test Created Successfully', success: true });
+        res.status(201).send({ message: 'Test Created Successfully', success: true, testId: newTest._id });
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: `Error in createTestController: ${error.message}`, success: false });
@@ -42,7 +42,9 @@ const getTestDetailsController = async (req, res) => {
         if (!test) {
             return res.status(404).send({ message: 'Test not found', success: false });
         }
-        res.status(200).send({ message: 'Test Details fetched successfully', success: true, test });
+        const InstitutionDetails = await userModel.findById(test.institutionID);
+
+        res.status(200).send({ message: 'Test Details fetched successfully', success: true, test, InstitutionDetails });
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: `Error in startTestController: ${error.message}`, success: false });
