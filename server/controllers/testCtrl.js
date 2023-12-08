@@ -56,6 +56,7 @@ const submitTestController = async (req, res) => {
         const userId= req.body.userId;
         const testId = req.body.testId;
         const answers = req.body.answers;
+        const tabCounts = req.body.tabCounts;
         const activities = req.body.activities;
         const user = await userModel.findById(userId);
         const test= await testModel.findById(testId);
@@ -75,14 +76,16 @@ const submitTestController = async (req, res) => {
             testId: testId,
             score: score,
             totalScore: questionSet.length,
-            activities: activities
+            activities: activities,
+            tabCounts: tabCounts
         });
         await user.save();
         test.studentsJoined.push({
             userId: userId,
             score: score,
             totalScore: questionSet.length,
-            activities: activities
+            activities: activities,
+            tabCounts: tabCounts
         });
         await test.save();
         res.status(200).send({ message: 'Test Submitted Successfully', success: true });

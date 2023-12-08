@@ -11,6 +11,9 @@ const Result = () => {
   const [score, setScore] = useState(0);
   const [totalScore, setTotalScore] = useState(0); 
   const [activities, setActivities] = useState({});
+  const [tabsCount, setTabsCount] = useState(0);
+
+  console.log(tabsCount);
 
   const { testId } = useParams();
 
@@ -26,6 +29,7 @@ const Result = () => {
         setScore(res.data.test.score);
         setTotalScore(res.data.test.totalScore);
         setActivities(res.data.test.activities);
+        setTabsCount(res.data.test.tabCounts);
       } else {
         message.error("Error in fetching test details");
       }
@@ -57,6 +61,10 @@ const Result = () => {
                 </tr>
               </thead>
               <tbody>
+                  <tr>
+                    <td className="border border-green-800 px-4 py-2">Count of Tab Switches</td>
+                    <td className="border border-green-800 px-4 py-2">{tabsCount}</td>
+                  </tr>
                   <tr>
                     <td className="border border-green-800 px-4 py-2">Number of times head movement occured</td>
                     <td className="border border-green-800 px-4 py-2">{activities[`number of times head movement occured`]}</td>

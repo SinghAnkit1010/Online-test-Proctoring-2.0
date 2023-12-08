@@ -97,6 +97,7 @@ const getTestsController = async (req, res) =>{
             ActivityScore+= tests[i]?.activities[`number of times no person detected`];
             ActivityScore+= tests[i]?.activities[`number of times talked`];
             ActivityScore+= tests[i]?.activities[`numbers of time phone detected`];
+            ActivityScore+= tests[i].tabCounts;
             
             const testDetails= {
                 testName: test.testName,
@@ -132,17 +133,24 @@ const getCreatedTestsController= async(req, res)=>{
         for(let i=0;i<tests.length;i++){
             const test = await testModel.findById({_id: tests[i]})
 
-            const date= test.startDate;
+            const date= test?.startDate;
             const utcDate = new Date(date);
             const options = { timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric" };
             const localDateString = utcDate.toLocaleDateString("en-US", options);
 
+
+            const time = test?.startTime;
+        const utcTime = new Date(time);
+        const optionsTime = { timeZone: "Asia/Kolkata", hour: "numeric", minute: "numeric"};
+        const localTimeString = utcTime.toLocaleTimeString("en-US", optionsTime);
+
             const testDetails= {
-                testName: test.testName,
+                testName: test?.testName,
+                startTime: localTimeString,
                 testDate: localDateString,
-                studentsCount: test.studentsJoined.length,
-                duration: test.duration,
-                testId: test._id
+                studentsCount: test?.studentsJoined.length,
+                duration: test?.duration,
+                testId: test?._id
             }
             createdTests.push(testDetails);
         }

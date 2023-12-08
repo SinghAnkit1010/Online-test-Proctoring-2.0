@@ -59,6 +59,7 @@ const InstitutionDashboard = () => {
               <Tr>
                 <Th>Test Name</Th>
                 <Th>Date</Th>
+                <Th>Time</Th>
                 <Th>Students Count</Th>
                 <Th>Duration</Th>
               </Tr>
@@ -68,6 +69,7 @@ const InstitutionDashboard = () => {
                     <Tr key={test.testId}>
                     <Td>{test.testName}</Td>
                     <Td>{test.testDate}</Td>
+                    <Td>{test.startTime}</Td>
                     <Td>{test.studentsCount}</Td>
                     <Td>{test.duration} Minutes</Td>
                     </Tr>

@@ -16,6 +16,8 @@ function StartTest() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  
+
   const handleJoinTest = async () => {
     try {
       const timeout = 3000;
@@ -33,12 +35,14 @@ function StartTest() {
       } else if (res.data.success) {
         message.success(res.data.message);
         navigate(`/test-page/${testId}`);
+        
       }
     } catch (error) {
       navigate(`/test-page/${testId}`);
       message.error("Error in fetching test details");
     }
   };
+  
 
   return (
     <Layout>
