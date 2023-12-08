@@ -54,18 +54,18 @@ function TestPage() {
     }
   };
 
-  // const requestFullScreen = () => {
-  //     const element = document.documentElement;
-  //     if (element.requestFullscreen) {
-  //       element.requestFullscreen();
-  //     } else if (element.mozRequestFullScreen) {
-  //       element.mozRequestFullScreen();
-  //     } else if (element.webkitRequestFullscreen) {
-  //       element.webkitRequestFullscreen();
-  //     } else if (element.msRequestFullscreen) {
-  //       element.msRequestFullscreen();
-  //     }
-  //   };
+  const requestFullScreen = () => {
+      const element = document.documentElement;
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+    };
 
   useEffect(() => {
     // Request fullscreen when the component mounts
@@ -158,13 +158,13 @@ function TestPage() {
           Submit
         </button>
       </form>
-      {/* <button
+      <button
         onClick={requestFullScreen}
         className="text-center self-end w-48 my-5 py-2 bg-blue-800 shadow-lg shadow-teal-500/50 hover:shadow-teal-500/40 text-white font-semibold rounded-lg"
         type="button"
       >
         Enter Fullscreen
-      </button> */}
+      </button>
       <div className="stream-area z-99 rounded">
         <img src={`http://localhost:9000/stream`} alt="Live Streaming" />
       </div>
