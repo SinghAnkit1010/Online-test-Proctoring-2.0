@@ -54,7 +54,13 @@ function TestPage() {
     }
   };
 
-  const requestFullScreen = () => {
+  
+
+  useEffect(() => {
+
+    getTestDetails();
+
+    const requestFullScreen = () => {
       const element = document.documentElement;
       if (element.requestFullscreen) {
         element.requestFullscreen();
@@ -66,13 +72,42 @@ function TestPage() {
         element.msRequestFullscreen();
       }
     };
+  
+    const handleFullScreenRequest = () => {
+      const userConfirmed = window.confirm("Do you want to enter fullscreen mode?");
+      if (userConfirmed) {
+        requestFullScreen();
+        document.removeEventListener("click", handleFullScreenRequest);
+      }
+      else{
+        requestFullScreen();
+        document.removeEventListener("click", handleFullScreenRequest);
 
-  useEffect(() => {
-    // Request fullscreen when the component mounts
-    // requestFullScreen();
-
-    getTestDetails();
+      }
+    };
+  
+    document.addEventListener("click", handleFullScreenRequest);
+  
+    return () => {
+      document.removeEventListener("click", handleFullScreenRequest);
+    };
   }, []);
+
+
+
+
+let tabSwitchCount = parseInt(localStorage.getItem('tabSwitchCount')) || 0;
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === 'visible') {
+    tabSwitchCount++;
+    localStorage.setItem('tabSwitchCount', tabSwitchCount);
+    console.log("Tab switched. Count: ", tabSwitchCount);
+  }
+});
+
+
+
 
   const handleSubmit = async () => {
     try {
@@ -84,9 +119,14 @@ function TestPage() {
         message.error("Error in submitting test1");
       }
 
+      const tabCounts = parseInt(localStorage.getItem('tabSwitchCount')) ;
+      localStorage.removeItem('tabSwitchCount');
+
+
+
       const res2 = await axios.post(
         `/api/v1/test/submitTest`,
-        { userId, answers, testId, activities },
+        { userId, answers, testId, activities, tabCounts },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -158,14 +198,8 @@ function TestPage() {
           Submit
         </button>
       </form>
-      <button
-        onClick={requestFullScreen}
-        className="text-center self-end w-48 my-5 py-2 bg-blue-800 shadow-lg shadow-teal-500/50 hover:shadow-teal-500/40 text-white font-semibold rounded-lg"
-        type="button"
-      >
-        Enter Fullscreen
-      </button>
       <div className="stream-area z-99 rounded">
+
         <img src={`http://localhost:9000/stream`} alt="Live Streaming" />
       </div>
     </>

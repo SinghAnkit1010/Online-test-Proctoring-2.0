@@ -97,6 +97,7 @@ const getTestsController = async (req, res) =>{
             ActivityScore+= tests[i]?.activities[`number of times no person detected`];
             ActivityScore+= tests[i]?.activities[`number of times talked`];
             ActivityScore+= tests[i]?.activities[`numbers of time phone detected`];
+            ActivityScore+= tests[i].tabCounts;
             
             const testDetails= {
                 testName: test.testName,
@@ -132,17 +133,24 @@ const getCreatedTestsController= async(req, res)=>{
         for(let i=0;i<tests.length;i++){
             const test = await testModel.findById({_id: tests[i]})
 
-            const date= test.startDate;
+            const date= test?.startDate;
             const utcDate = new Date(date);
             const options = { timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric" };
             const localDateString = utcDate.toLocaleDateString("en-US", options);
 
+
+            const time = test?.startTime;
+        const utcTime = new Date(time);
+        const optionsTime = { timeZone: "Asia/Kolkata", hour: "numeric", minute: "numeric"};
+        const localTimeString = utcTime.toLocaleTimeString("en-US", optionsTime);
+
             const testDetails= {
-                testName: test.testName,
+                testName: test?.testName,
+                startTime: localTimeString,
                 testDate: localDateString,
-                studentsCount: test.studentsJoined.length,
-                duration: test.duration,
-                testId: test._id
+                studentsCount: test?.studentsJoined.length,
+                duration: test?.duration,
+                testId: test?._id
             }
             createdTests.push(testDetails);
         }
@@ -162,4 +170,44 @@ const getCreatedTestsController= async(req, res)=>{
 }
 
 
-export {loginController, registerController, authController, getTestsController, getCreatedTestsController}
+const updateUserController = async (req, res) => {
+    try {
+        const userDetails = req.body;
+        const user = await userModel.findById({ _id: req.body.userId  });
+     
+            if (userDetails.name) {
+                user.name = userDetails.name;
+            }
+            
+            if (userDetails.contact) {
+                user.contact = userDetails.contact;
+            }
+            if (userDetails.address) {
+                user.address = userDetails.address;
+            }
+            if(userDetails.age){
+                user.age= userDetails.age;
+            }
+            if(userDetails.sex){
+                user.sex= userDetails.sex;
+            }
+
+            await user.save();
+            res.status(200).send({
+                success: true,
+                message: 'User updated successfully',
+                user
+            })
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            message: 'User update error',
+            success: false,
+            error
+        })
+    }
+}
+
+
+export {loginController, registerController, authController, getTestsController, getCreatedTestsController, updateUserController}

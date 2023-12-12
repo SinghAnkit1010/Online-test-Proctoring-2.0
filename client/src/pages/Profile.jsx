@@ -32,7 +32,7 @@ function Profile() {
 
   const handleSave = async () => {
     try {
-      await form.validateFields(); // Validate the form fields
+      await form.validateFields(); 
       const values = form.getFieldsValue();
 
       if (values.contact && !/^\d{10}$/.test(values.contact)) {
@@ -42,17 +42,23 @@ function Profile() {
 
       dispatch(showLoading());
       const updatedUser = { ...user, ...values };
-      const response = await axios.post('/api/v1/user/update-user', updatedUser);
+      const response = await axios.post('/api/v1/user/update-user', updatedUser,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }  
+      );
       dispatch(hideLoading());
-      if (response.success) {
-        message.success(response.message);
+      if (response.data.success) {
+        message.success(response.data.message);
         setIsEditing(false);
         window.location.reload();
       } else {
         message.error(response.message);
       }
     } catch (error) {
-      message.error('Please fill in all required fields.');
+      message.error('Error while updating the profile.');
     }
   };
 
