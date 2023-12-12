@@ -170,4 +170,44 @@ const getCreatedTestsController= async(req, res)=>{
 }
 
 
-export {loginController, registerController, authController, getTestsController, getCreatedTestsController}
+const updateUserController = async (req, res) => {
+    try {
+        const userDetails = req.body;
+        const user = await userModel.findById({ _id: req.body.userId  });
+     
+            if (userDetails.name) {
+                user.name = userDetails.name;
+            }
+            
+            if (userDetails.contact) {
+                user.contact = userDetails.contact;
+            }
+            if (userDetails.address) {
+                user.address = userDetails.address;
+            }
+            if(userDetails.age){
+                user.age= userDetails.age;
+            }
+            if(userDetails.sex){
+                user.sex= userDetails.sex;
+            }
+
+            await user.save();
+            res.status(200).send({
+                success: true,
+                message: 'User updated successfully',
+                user
+            })
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            message: 'User update error',
+            success: false,
+            error
+        })
+    }
+}
+
+
+export {loginController, registerController, authController, getTestsController, getCreatedTestsController, updateUserController}

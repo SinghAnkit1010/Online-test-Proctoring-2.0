@@ -28,7 +28,20 @@ const userSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
+    contact:{
+        type: String,
+    },
+    address:{
+        type: String,
+    },
+    age:{
+        type:Number
+    },
+    sex:{
+        type:String
+    }
 });
+
 
 const userModel = mongoose.model('user', userSchema);
 
