@@ -14,6 +14,8 @@ app = Flask(__name__,template_folder="template")
 CORS(app) 
 api = Api(app)
 
+print("welcome from flask")
+
 mp_face_detection = mp.solutions.face_detection
 face_detection = mp_face_detection.FaceDetection(model_selection = 1,min_detection_confidence = 0.5)
 
@@ -41,7 +43,17 @@ def video_streaming():
     head_move = 0
     talk = 0
     global capture
-    capture = cv2.VideoCapture(0)
+    
+    for i in range(10):  # Try indices 0-9
+        capture = cv2.VideoCapture(i)
+        if not capture.isOpened():
+            continue
+        else:
+            print(f"Camera found at index {i}")
+            break
+
+    
+    
     while streaming:
         # print("not detected:" + str(not_detected))
         # print("many_person:" + str(many_person))

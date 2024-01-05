@@ -10,7 +10,10 @@
     "start": "nodemon index.js",
     "server": "cd server && nodemon index.js",
     "client": "npm start --prefix ./client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "flask": "cd AI-Section && python app.py",
+    "all": "concurrently \"npm run server\" \"npm run client\" \"npm run flask\"" ,
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "app": "concurrently \"npm run dev\" \"npm run flask\""
   },
   "author": "V-SMART",
   "license": "ISC",
