@@ -1,0 +1,25 @@
+services:
+  react-node-app:
+    image: react-node-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+      - "4000:4000"
+    volumes:
+      - .:/app  
+    environment:
+      # - MONGODB_URL= <pase your mongodb url>
+      # - JWT_SECRET= <write your jwt secret key>
+
+  flask-app:
+    image: flask-app
+    build:
+      context: ./AI-Section
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./AI-Section:/app
+   
