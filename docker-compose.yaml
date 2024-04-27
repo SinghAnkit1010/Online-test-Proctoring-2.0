@@ -10,8 +10,8 @@ services:
     volumes:
       - .:/app  
     environment:
-      # - MONGODB_URL= <pase your mongodb url>
-      # - JWT_SECRET= <write your jwt secret key>
+      - MONGODB_URL= 
+      - JWT_SECRET= 
 
   flask-app:
     image: flask-app
@@ -23,3 +23,5 @@ services:
     volumes:
       - ./AI-Section:/app
    
+
+  #  You can change the ports also according to your need.
