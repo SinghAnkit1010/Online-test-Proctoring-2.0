@@ -44,16 +44,16 @@ def video_streaming():
     talk = 0
     global capture
     
-    for i in range(10):  # Try indices 0-9
-        capture = cv2.VideoCapture(i)
-        if not capture.isOpened():
-            continue
-        else:
-            print(f"Camera found at index {i}")
-            break
+    # for i in range(10):  # Try indices 0-9
+    #     capture = cv2.VideoCapture(i)
+    #     if not capture.isOpened():
+    #         continue
+    #     else:
+    #         print(f"Camera found at index {i}")
+    #         break
 
     
-    
+    capture = cv2.VideoCapture(0)
     while streaming:
         # print("not detected:" + str(not_detected))
         # print("many_person:" + str(many_person))
